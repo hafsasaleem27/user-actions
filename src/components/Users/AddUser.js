@@ -7,17 +7,23 @@ import styles from "./AddUser.module.css";
 const AddUser = (props) => {
   const [enteredName, setEnteredName] = useState("");
   const [enteredAge, setEnteredAge] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
 
     if (enteredName.trim() === "" || enteredAge.trim() === "") {
-      setIsModalOpen(true);
+      setError({
+        title: "Invalid Input",
+        message: "Please enter valid name and age (non-empty values)."
+      });
       return;
     }
     if (+enteredAge < 1) {
-      setIsModalOpen(true);
+      setError({
+        title: "Invalid Age",
+        message: "Please enter a valid age (> 0)",
+      });
       return;
     }
 
@@ -35,15 +41,15 @@ const AddUser = (props) => {
     setEnteredAge(event.target.value);
   };
 
-  const closeErrorModal = () => setIsModalOpen(false);
+  const errorHandler = () => setError(null);
 
   return (
     <div>
-      {isModalOpen && (
+      {error && (
         <ErrorModal
-          title="An error occured!"
-          message="Something went wrong!"
-          onClick={closeErrorModal}
+          title={error.title}
+          message={error.message}
+          onConfirm={errorHandler}
         />
       )}
       <Card className={styles.input}>
